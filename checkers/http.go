@@ -32,14 +32,14 @@ const (
 //
 // "Timeout" is optional and defaults to "3s".
 type HTTPConfig struct {
-	URL         *url.URL      // Required
-	Method      string        // Optional (default GET)
-	Payload     interface{}   // Optional
-	StatusCode  int           // Optional (default 200)
-	Expect      string        // Optional
-	Client      *http.Client  // Optional
-	Timeout     time.Duration // Optional (default 3s)
-	HTTPHeaders map[string]string
+	URL         *url.URL          // Required
+	Method      string            // Optional (default GET)
+	Payload     interface{}       // Optional
+	StatusCode  int               // Optional (default 200)
+	Expect      string            // Optional
+	Client      *http.Client      // Optional
+	Timeout     time.Duration     // Optional (default 3s)
+	HTTPHeaders map[string]string // Optional
 }
 
 // HTTP implements the "ICheckable" interface.
