@@ -32,13 +32,14 @@ const (
 //
 // "Timeout" is optional and defaults to "3s".
 type HTTPConfig struct {
-	URL        *url.URL      // Required
-	Method     string        // Optional (default GET)
-	Payload    interface{}   // Optional
-	StatusCode int           // Optional (default 200)
-	Expect     string        // Optional
-	Client     *http.Client  // Optional
-	Timeout    time.Duration // Optional (default 3s)
+	URL         *url.URL      // Required
+	Method      string        // Optional (default GET)
+	Payload     interface{}   // Optional
+	StatusCode  int           // Optional (default 200)
+	Expect      string        // Optional
+	Client      *http.Client  // Optional
+	Timeout     time.Duration // Optional (default 3s)
+	HTTPHeaders map[string]string
 }
 
 // HTTP implements the "ICheckable" interface.
@@ -101,6 +102,10 @@ func (h *HTTP) do() (*http.Response, error) {
 	req, err := http.NewRequest(h.Config.Method, h.Config.URL.String(), payload)
 	if err != nil {
 		return nil, fmt.Errorf("Unable to create new HTTP request for HTTPMonitor check: %v", err)
+	}
+
+	for k, v := range h.Config.HTTPHeaders {
+		req.Header.Set(k, v)
 	}
 
 	resp, err := h.Config.Client.Do(req)
