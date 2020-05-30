@@ -40,6 +40,7 @@ type HTTPConfig struct {
 	Client      *http.Client      // Optional
 	Timeout     time.Duration     // Optional (default 3s)
 	HTTPHeaders map[string]string // Optional
+	Host        string
 }
 
 // HTTP implements the "ICheckable" interface.
@@ -107,6 +108,7 @@ func (h *HTTP) do() (*http.Response, error) {
 	for k, v := range h.Config.HTTPHeaders {
 		req.Header.Set(k, v)
 	}
+	req.Host = h.Config.Host
 
 	resp, err := h.Config.Client.Do(req)
 	if err != nil {
