@@ -2,6 +2,7 @@ package checkers
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -32,15 +33,16 @@ const (
 //
 // "Timeout" is optional and defaults to "3s".
 type HTTPConfig struct {
-	URL         *url.URL          // Required
-	Method      string            // Optional (default GET)
-	Payload     interface{}       // Optional
-	StatusCode  int               // Optional (default 200)
-	Expect      string            // Optional
-	Client      *http.Client      // Optional
-	Timeout     time.Duration     // Optional (default 3s)
-	HTTPHeaders map[string]string // Optional
-	Host        string
+	URL                *url.URL          // Required
+	Method             string            // Optional (default GET)
+	Payload            interface{}       // Optional
+	StatusCode         int               // Optional (default 200)
+	Expect             string            // Optional
+	Client             *http.Client      // Optional
+	Timeout            time.Duration     // Optional (default 3s)
+	HTTPHeaders        map[string]string // Optional
+	Host               string            // Optional
+	NoCertVerification bool              // Optional
 }
 
 // HTTP implements the "ICheckable" interface.
@@ -139,6 +141,11 @@ func (h *HTTPConfig) prepare() error {
 
 	if h.Client == nil {
 		h.Client = &http.Client{Timeout: h.Timeout}
+		if h.NoCertVerification == true {
+			h.Client.Transport = &http.Transport{
+				TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+			}
+		}
 	} else {
 		h.Client.Timeout = h.Timeout
 	}
